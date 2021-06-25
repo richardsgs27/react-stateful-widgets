@@ -12,6 +12,7 @@ Find comments below to help you along.
 */
 
 import React from 'react';
+import React, { useState } from 'react'
 
 // Use this variable ONLY to initialize a slice of state!
 // There is something in the JSX right now breaking this rule...
@@ -27,6 +28,9 @@ export const listOfAwesome = [
 export default function Programmers() {
   // We'll have to use the state hook twice, as we need two slices of state.
   // The programmers list on the one hand, and the id of the featured programmer on the other.
+  const [featured, setFeatured] = useState(0)
+  const [programmers, setProgrammers] = useState(listOfAwesome)
+
 
   const getNameOfFeatured = () => {
     // Leave this for last!
@@ -34,6 +38,14 @@ export default function Programmers() {
     // It's going to utilize both slices of state to return the _name_ of the featured dev.
     // The beauty of closures is that we can "see" both slices of state from this region
     // of the program, without needing to inject the information through arguments.
+    //console.log(featured)
+    let name = ''
+    programmers.forEach((dev) => {
+      if(parseInt(dev.id) == featured) {
+        name = dev.name
+      }
+    });
+    return name
   };
 
   const style = {
@@ -41,6 +53,9 @@ export default function Programmers() {
     marginTop: '0.5em',
     color: 'royalblue', // 🤔 color turns to gold, when celebrating
   };
+  if(featured !== 0) {
+    style.color = 'gold'
+  }
 
   return (
     <div className='widget-programmers container'>
@@ -51,8 +66,10 @@ export default function Programmers() {
           We might think: "it works, though!" But if the list of programmers is not state,
           we could never add or edit programmers in the future. The list would be a static thing." */
           listOfAwesome.map(dev =>
+            programmers.map(dev =>
             <div className='programmer' key={dev.id}>
               {dev.name} <button onClick={() => { /* in here set the featured id to be dev.id */ }}>Feature</button>
+              {dev.name} <button onClick={() => {setFeatured(dev.id)}}>Feature</button>
             </div>
           )
         }
@@ -63,6 +80,7 @@ export default function Programmers() {
           // Pseudo-code: if the currently featured id is truthy render text 1, otherwise render text 2.
           // Replace the hard-coded false with the correct variable.
           false
+          (featured !== 0)
             ? `🎉 Let's celebrate ${getNameOfFeatured()}! 🥳`
             : 'Pick an awesome programmer'
         }
